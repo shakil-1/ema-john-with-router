@@ -1,0 +1,53 @@
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import './SginUp.css'
+const SginUp = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmpassword, setConfirmpassword] = useState('');
+    const [error, serError] = useState('');
+
+
+
+    const handelEmailBlur = event => {
+        setEmail(event.target.value)
+
+    }
+    const handelpasswordBlur = event => {
+        setPassword(event.target.value)
+    }
+    const handelConfirmpassword = event => {
+        setConfirmpassword(event.target.value)
+    }
+
+    const handelSignupSubmit = event => {
+        event.preventDefault();
+    }
+    return (
+        <div className='form-container'>
+
+            <div>
+                <h1>SignUp</h1>
+                <form onSubmit={handelSignupSubmit}>
+
+                    <div className="input-group">
+                        <label htmlFor="email">Email</label>
+                        <input onBlur={handelEmailBlur} type="email" name="email" placeholder='enter your email' required id="" />
+                    </div>
+                    <div className="input-group">
+                        <label htmlFor="password">Password</label>
+                        <input onBlur={handelpasswordBlur} type="password" name="password" placeholder='password' required id="" />
+                    </div>
+                    <div className="input-group">
+                        <label htmlFor="confirm-password">Confirm Password</label>
+                        <input onBlur={handelConfirmpassword} type="password" name="confirm-password" placeholder='confirm password' required id="" />
+                    </div>
+                    <input className='form-submit' type="submit" value="SignUp" />
+                </form>
+                <p>Already have an account?<Link to="/login"> Login</Link></p>
+            </div>
+        </div>
+    );
+};
+
+export default SginUp;
