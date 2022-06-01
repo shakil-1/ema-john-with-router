@@ -1,14 +1,22 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import auth from '../../Firebase.init';
 import './Login.css'
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [confirmpassword, setConfirmpassword] = useState('');
-    const [error, serError] = useState('');
 
-
+    const [
+        signInWithEmailAndPassword,
+        user,
+        loading,
+        error,
+    ] = useSignInWithEmailAndPassword(auth);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pthname || '/';
 
     const handelEmailBlur = event => {
         setEmail(event.target.value)
@@ -17,13 +25,12 @@ const Login = () => {
     const handelpasswordBlur = event => {
         setPassword(event.target.value)
     }
-    const handelConfirmpassword = event => {
-        setConfirmpassword(event.target.value)
+    if (user) {
+        navigate(from, {replace: true});
     }
-
-
     const handelFormSubmit = event => {
         event.preventDefault();
+        signInWithEmailAndPassword(email, password)
     }
 
     return (
@@ -40,7 +47,11 @@ const Login = () => {
                         <label htmlFor="password">Password</label>
                         <input onBlur={handelpasswordBlur} type="password" name="password" placeholder='password' required id="" />
                     </div>
-                    <input  className='form-submit' type="submit" value="Login" />
+                    <p style={{ color: 'red' }}>{error?.message}</p>
+                    {
+                        loading && <p>Loding.....</p>
+                    }
+                    <input className='form-submit' type="submit" value="Login" />
                 </form>
                 <p>New to Ema-john? <Link to="/signup">Create New Account</Link></p>
             </div>

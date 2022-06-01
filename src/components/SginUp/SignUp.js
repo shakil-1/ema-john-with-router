@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import './SginUp.css'
+
+import { Link, useNavigate } from 'react-router-dom';
+import './SginUp.css';
+import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import auth from '../../Firebase.init'
+import { useState } from 'react';
+
+
 const SginUp = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmpassword, setConfirmpassword] = useState('');
-    const [error, serError] = useState('');
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
 
+    const [createUserWithEmailAndPassword, user] = useCreateUserWithEmailAndPassword(auth);
 
 
     const handelEmailBlur = event => {
@@ -20,8 +27,17 @@ const SginUp = () => {
         setConfirmpassword(event.target.value)
     }
 
+    if (user) {
+        navigate('/shop')
+    }
     const handelSignupSubmit = event => {
         event.preventDefault();
+        if (password !== confirmpassword) {
+            setError('You Tow password did not match')
+            return;
+        }
+
+        createUserWithEmailAndPassword(email, password)
     }
     return (
         <div className='form-container'>
@@ -42,6 +58,7 @@ const SginUp = () => {
                         <label htmlFor="confirm-password">Confirm Password</label>
                         <input onBlur={handelConfirmpassword} type="password" name="confirm-password" placeholder='confirm password' required id="" />
                     </div>
+                    <p>{error}</p>
                     <input className='form-submit' type="submit" value="SignUp" />
                 </form>
                 <p>Already have an account?<Link to="/login"> Login</Link></p>
